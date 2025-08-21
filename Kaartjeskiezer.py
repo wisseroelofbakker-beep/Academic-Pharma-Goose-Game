@@ -39,13 +39,18 @@ st.title("🎲 Kaartjeskiezer – Academic Pharma Bordspel")
 fase = st.selectbox("Kies een fase:", list(kaartjes.keys()))
 kaart_type = st.selectbox("Kies een type kaartje:", ["Vraag", "Positief gevolg", "Negatief gevolg"])
 
+if "gekozen_kaart" not in st.session_state:
+    st.session_state.gekozen_kaart = None
+
 if st.button("Trek een kaartje"):
     if kaart_type == "Vraag":
-        gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
-        st.info(f"**Vraag – {fase}**\n\n{gekozen_kaart['vraag']}")
-        if st.button("Toon antwoord"):
-            st.success(f"Antwoord: {gekozen_kaart['antwoord']}")
+        st.session_state.gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
+        st.info(f"**Vraag – {fase}**\n\n{st.session_state.gekozen_kaart['vraag']}")
     else:
         gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
         st.success(f"**{kaart_type} – {fase}**\n\n{gekozen_kaart}")
+
+if kaart_type == "Vraag" and st.session_state.gekozen_kaart:
+    if st.button("Toon antwoord"):
+        st.success(f"Antwoord: {st.session_state.gekozen_kaart['antwoord']}")
 
