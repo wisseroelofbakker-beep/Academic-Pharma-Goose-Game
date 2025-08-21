@@ -2,12 +2,12 @@
 import streamlit as st
 import random
 
-# Voorbeelddata
+# Voorbeelddata met vragen en antwoorden
 kaartjes = {
     "Fase 1": {
         "Vraag": [
-            "Wat is het doel van preklinisch onderzoek?",
-            "Welke modellen worden gebruikt in dierstudies?"
+            {"vraag": "Wat is het doel van preklinisch onderzoek?", "antwoord": "Het doel is om de veiligheid en werkzaamheid van een geneesmiddel te testen in diermodellen voordat het op mensen wordt toegepast."},
+            {"vraag": "Welke modellen worden gebruikt in dierstudies?", "antwoord": "Vaak worden muizen, ratten of andere kleine dieren gebruikt om toxiciteit en effectiviteit te beoordelen."}
         ],
         "Positief gevolg": [
             "Je muizenstudie toont geen bijwerkingen – ga 2 vakjes vooruit.",
@@ -20,8 +20,8 @@ kaartjes = {
     },
     "Fase 2": {
         "Vraag": [
-            "Wat is een dose-finding studie?",
-            "Waarom is randomisatie belangrijk in fase 2?"
+            {"vraag": "Wat is een dose-finding studie?", "antwoord": "Een studie om de optimale dosering van een geneesmiddel te bepalen."},
+            {"vraag": "Waarom is randomisatie belangrijk in fase 2?", "antwoord": "Om bias te voorkomen en betrouwbare resultaten te verkrijgen."}
         ],
         "Positief gevolg": [
             "Je vindt een optimale dosering – gooi nog een keer.",
@@ -31,17 +31,21 @@ kaartjes = {
             "Onvoldoende effect bij lage dosering – ga 1 vakje terug.",
             "Een patiënt stopt vroegtijdig – wacht 1 beurt."
         ]
-    },
-    # Voeg Fase 3 t/m 6 toe op dezelfde manier
+    }
 }
 
 st.title("🎲 Kaartjeskiezer – Academic Pharma Bordspel")
 
-# Selectie van fase en type
 fase = st.selectbox("Kies een fase:", list(kaartjes.keys()))
 kaart_type = st.selectbox("Kies een type kaartje:", ["Vraag", "Positief gevolg", "Negatief gevolg"])
 
-# Trek een kaartje
 if st.button("Trek een kaartje"):
-    gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
-    st.success(f"**{kaart_type} – {fase}**\n\n{gekozen_kaart}")
+    if kaart_type == "Vraag":
+        gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
+        st.info(f"**Vraag – {fase}**\n\n{gekozen_kaart['vraag']}")
+        if st.button("Toon antwoord"):
+            st.success(f"Antwoord: {gekozen_kaart['antwoord']}")
+    else:
+        gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
+        st.success(f"**{kaart_type} – {fase}**\n\n{gekozen_kaart}")
+
