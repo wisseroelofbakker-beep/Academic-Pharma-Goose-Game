@@ -2,6 +2,8 @@
 import streamlit as st
 import random
 
+st.image("https://raw.githubusercontent.com/wisseroelofbakker-beep/Academic-Pharma-Goose-Game/main/Icon_Academic_Pharma.png", width=200
+
 # Voorbeelddata met vragen en antwoorden
 kaartjes = {
     "Fase 1": {
