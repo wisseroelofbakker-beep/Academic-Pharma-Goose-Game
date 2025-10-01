@@ -1,41 +1,60 @@
 
 import streamlit as st
+import pandas as pd
 import random
 
+# Laad de kaartjes uit het Excel-bestand
+excel_file = "Academic Pharma Game cards (Antwoorden).xlsx"
+df = pd.read_excel(excel_file, sheet_name=0, engine="openpyxl")
+
+# Hernoem kolommen voor duidelijkheid
+df.columns = [
+    "Tijdstempel",
+    "Fase",
+    "Zijde1",
+    "Zijde2",
+    "Kaarttype",
+    "Kolom5",
+    "Kolom4"
+]
+
+# Functie om kaarttype te normaliseren
+def normaliseer_kaarttype(kaarttype):
+    if "Red" in kaarttype:
+        return "Negatief gevolg"
+    elif "Green" in kaarttype:
+        return "Positief gevolg"
+    elif "Black" in kaarttype:
+        return "Vraag"
+    else:
+        return "Onbekend"
+
+# Normaliseer kaarttypes
+df["Kaarttype_norm"] = df["Kaarttype"].apply(normaliseer_kaarttype)
+
+# Genereer de kaartjes dictionary
+kaartjes = {}
+for _, row in df.iterrows():
+    fase = row["Fase"]
+    kaarttype = row["Kaarttype_norm"]
+    zijde1 = str(row["Zijde1"]).strip()
+    zijde2 = str(row["Zijde2"]).strip()
+
+    if fase not in kaartjes:
+        kaartjes[fase] = {
+            "Vraag": [],
+            "Positief gevolg": [],
+            "Negatief gevolg": []
+        }
+
+    if kaarttype == "Vraag":
+        kaartjes[fase]["Vraag"].append({"vraag": zijde1, "antwoord": zijde2})
+    elif kaarttype in ["Positief gevolg", "Negatief gevolg"]:
+        kaartjes[fase][kaarttype].append(f"{zijde1}\n{zijde2}")
+
+# Streamlit-app
+st.set_page_config(page_title="Kaartjeskiezer – Academic Pharma", page_icon="🎲")
 st.image("https://raw.githubusercontent.com/wisseroelofbakker-beep/Academic-Pharma-Goose-Game/main/Icon_Academic_Pharma.png", width=200)
-
-# Voorbeelddata met vragen en antwoorden
-kaartjes = {
-    "Fase 1": {
-        "Vraag": [
-            {"vraag": "Wat is het doel van preklinisch onderzoek?", "antwoord": "Het doel is om de veiligheid en werkzaamheid van een geneesmiddel te testen in diermodellen voordat het op mensen wordt toegepast."},
-            {"vraag": "Welke modellen worden gebruikt in dierstudies?", "antwoord": "Vaak worden muizen, ratten of andere kleine dieren gebruikt om toxiciteit en effectiviteit te beoordelen."}
-        ],
-        "Positief gevolg": [
-            "Je muizenstudie toont geen bijwerkingen – ga 2 vakjes vooruit.",
-            "Je ontvangt extra subsidie voor je dierstudie – sla een beurt over."
-        ],
-        "Negatief gevolg": [
-            "Er wordt een onverwachte bijwerking gevonden – wacht 1 beurt.",
-            "Je moet een extra toxiciteitsstudie uitvoeren – ga 1 vakje terug."
-        ]
-    },
-    "Fase 2": {
-        "Vraag": [
-            {"vraag": "Wat is een dose-finding studie?", "antwoord": "Een studie om de optimale dosering van een geneesmiddel te bepalen."},
-            {"vraag": "Waarom is randomisatie belangrijk in fase 2?", "antwoord": "Om bias te voorkomen en betrouwbare resultaten te verkrijgen."}
-        ],
-        "Positief gevolg": [
-            "Je vindt een optimale dosering – gooi nog een keer.",
-            "Je studie toont goede werkzaamheid – ga 2 vakjes vooruit."
-        ],
-        "Negatief gevolg": [
-            "Onvoldoende effect bij lage dosering – ga 1 vakje terug.",
-            "Een patiënt stopt vroegtijdig – wacht 1 beurt."
-        ]
-    }
-}
-
 st.title("🎲 Kaartjeskiezer – Academic Pharma Bordspel")
 
 fase = st.selectbox("Kies een fase:", list(kaartjes.keys()))
