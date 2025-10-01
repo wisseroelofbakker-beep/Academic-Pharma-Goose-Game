@@ -69,7 +69,41 @@ if st.button("Trek een kaartje"):
         st.info(f"**Vraag – {fase}**\n\n{st.session_state.gekozen_kaart['vraag']}")
     else:
         gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
-        st.success(f"**{kaart_type} – {fase}**\n\n{gekozen_kaart}")
+        
+if st.button("Trek een kaartje"):
+    if kaart_type == "Vraag":
+        st.session_state.gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
+        st.markdown(
+            f"""
+            <div style="background-color:#333333;color:white;padding:15px;border-radius:10px">
+            <strong>Vraag – {fase}</strong><br><br>
+            {st.session_state.gekozen_kaart['vraag']}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    elif kaart_type == "Positief gevolg":
+        gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
+        st.markdown(
+            f"""
+            <div style="background-color:#ccffcc;padding:15px;border-radius:10px">
+            <strong>Positief gevolg – {fase}</strong><br><br>
+            {gekozen_kaart.replace('\n', '<br>')}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    elif kaart_type == "Negatief gevolg":
+        gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
+        st.markdown(
+            f"""
+            <div style="background-color:#ffcccc;padding:15px;border-radius:10px">
+            <strong>Negatief gevolg – {fase}</strong><br><br>
+            {gekozen_kaart.replace('\n', '<br>')}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 if kaart_type == "Vraag" and st.session_state.gekozen_kaart:
     if st.button("Toon antwoord"):
