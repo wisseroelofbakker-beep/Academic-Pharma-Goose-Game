@@ -63,13 +63,7 @@ kaart_type = st.selectbox("Kies een type kaartje:", ["Vraag", "Positief gevolg",
 if "gekozen_kaart" not in st.session_state:
     st.session_state.gekozen_kaart = None
 
-if st.button("Trek een kaartje"):
-    if kaart_type == "Vraag":
-        st.session_state.gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
-        st.info(f"**Vraag – {fase}**\n\n{st.session_state.gekozen_kaart['vraag']}")
-    else:
-        gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
-        
+
 if st.button("Trek een kaartje"):
     if kaart_type == "Vraag":
         st.session_state.gekozen_kaart = random.choice(kaartjes[fase][kaart_type])
