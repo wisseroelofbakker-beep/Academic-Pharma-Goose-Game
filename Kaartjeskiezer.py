@@ -8,15 +8,12 @@ excel_file = "Academic Pharma Game cards (Antwoorden).xlsx"
 df = pd.read_excel(excel_file, sheet_name=0, engine="openpyxl")
 
 # Hernoem kolommen voor duidelijkheid
-df.columns = [
-    "Tijdstempel",
-    "Fase",
-    "Zijde1",
-    "Zijde2",
-    "Kaarttype",
-    "Kolom5",
-    "Kolom4"
-]
+df = df.rename(columns={
+    "Your card is about which phase?": "Fase",
+    "What kind of card are you providing?": "Kaarttype",
+    "Provide here a Question or a positive / negative story (side 1 of the card)": "Zijde1",
+    "Provide here the answer or the negative or positive consequence (side 2 of the card)": "Zijde2"
+})
 
 # Functie om kaarttype te normaliseren
 def normaliseer_kaarttype(kaarttype):
