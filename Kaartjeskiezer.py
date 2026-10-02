@@ -40,6 +40,9 @@ df["Kaarttype_norm"] = df["Kaarttype"].apply(
     normaliseer_kaarttype
 )
 
+st.write(df["Kaarttype"].unique())
+st.write(df["Kaarttype_norm"].value_counts())
+
 # Genereer de kaartjes dictionary
 kaartjes = {}
 for _, row in df.iterrows():
