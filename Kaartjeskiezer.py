@@ -15,19 +15,30 @@ df = df.rename(columns={
     "Provide here the answer or the negative or positive consequence (side 2 of the card)": "Zijde2"
 })
 
+# Lege waarden opvullen
+df["Kaarttype"] = df["Kaarttype"].fillna("")
+
 # Functie om kaarttype te normaliseren
 def normaliseer_kaarttype(kaarttype):
-    if "Red" in kaarttype:
+
+    kaarttype = str(kaarttype)
+
+    if "Negative" in kaarttype:
         return "Negatief gevolg"
-    elif "Green" in kaarttype:
+
+    elif "Positive" in kaarttype:
         return "Positief gevolg"
-    elif "Black" in kaarttype:
+
+    elif "Question" in kaarttype:
         return "Vraag"
+
     else:
         return "Onbekend"
 
-# Normaliseer kaarttypes
-df["Kaarttype_norm"] = df["Kaarttype"].apply(normaliseer_kaarttype)
+# Nieuwe kolom maken
+df["Kaarttype_norm"] = df["Kaarttype"].apply(
+    normaliseer_kaarttype
+)
 
 # Genereer de kaartjes dictionary
 kaartjes = {}
