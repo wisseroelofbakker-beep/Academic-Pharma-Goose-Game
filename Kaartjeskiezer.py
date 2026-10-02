@@ -15,7 +15,7 @@ st.set_page_config(
 # EXCEL INLEZEN
 # --------------------------------------------------
 
-excel_file = "Academic Pharma Game cards (Antwoorden).xlsx"
+excel_file = "Academic Pharma Game cards (Antwoorden) extended.xlsx"
 
 df = pd.read_excel(
     excel_file,
