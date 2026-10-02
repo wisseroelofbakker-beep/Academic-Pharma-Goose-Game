@@ -131,6 +131,50 @@ if len(kaartjes) == 0:
     st.stop()
 
 # --------------------------------------------------
+# SESSION STATE
+# --------------------------------------------------
+
+if "gekozen_kaart" not in st.session_state:
+    st.session_state.gekozen_kaart = None
+
+if "decks" not in st.session_state:
+    st.session_state.decks = {}
+
+# --------------------------------------------------
+# FUNCTIE: TREK KAART ZONDER DUPLICATEN
+# --------------------------------------------------
+
+def trek_kaart_zonder_duplicaten(fase, kaart_type):
+
+    sleutel = f"{fase}_{kaart_type}"
+
+    kaarten = kaartjes[fase][kaart_type]
+
+    if (
+        sleutel not in st.session_state.decks
+        or len(st.session_state.decks[sleutel]) == 0
+    ):
+
+        st.session_state.decks[sleutel] = kaarten.copy()
+
+        random.shuffle(
+            st.session_state.decks[sleutel]
+        )
+
+    return st.session_state.decks[sleutel].pop()
+
+# --------------------------------------------------
+# HEADER
+# --------------------------------------------------
+
+st.image(
+    "https://raw.githubusercontent.com/wisseroelofbakker-beep/Academic-Pharma-Goose-Game/main/Icon_Academic_Pharma.png",
+    width=200
+)
+
+st.title("🎲 Kaartjeskiezer – Academic Pharma Bordspel")
+
+# --------------------------------------------------
 # SELECTIES
 # --------------------------------------------------
 
@@ -148,8 +192,152 @@ kaart_type = st.selectbox(
     ]
 )
 
-if "gekozen_kaart" not in st.session_state:
+# --------------------------------------------------
+# KAARTTELLER
+# --------------------------------------------------
+
+sleutel = f"{fase}_{kaart_type}"
+
+totaal = len(
+    kaartjes[fase][kaart_type]
+)
+
+if sleutel in st.session_state.decks:
+    resterend = len(
+        st.session_state.decks[sleutel]
+    )
+else:
+    resterend = totaal
+
+st.info(
+    f"📚 Nog {resterend} van de {totaal} kaarten beschikbaar in deze stapel."
+)
+
+# --------------------------------------------------
+# RESET KNOP
+# --------------------------------------------------
+
+if st.button("🔄 Reset alle kaartstapels"):
+
+    st.session_state.decks = {}
     st.session_state.gekozen_kaart = None
+
+    st.success(
+        "Alle kaartstapels zijn opnieuw geschud."
+    )
+
+# --------------------------------------------------
+# TREK KAART
+# --------------------------------------------------
+
+if st.button("🎲 Trek een kaartje"):
+
+    st.session_state.gekozen_kaart = None
+
+    beschikbare_kaarten = kaartjes[fase][kaart_type]
+
+    if len(beschikbare_kaarten) == 0:
+
+        st.error(
+            f"Er zijn geen '{kaart_type}' kaarten beschikbaar voor '{fase}'."
+        )
+
+    else:
+
+        # ------------------------------
+        # VRAAG
+        # ------------------------------
+
+        if kaart_type == "Vraag":
+
+            st.session_state.gekozen_kaart = (
+                trek_kaart_zonder_duplicaten(
+                    fase,
+                    kaart_type
+                )
+            )
+
+            st.markdown(
+                f"""
+                <div style="
+                    background-color:#333333;
+                    color:white;
+                    padding:15px;
+                    border-radius:10px;">
+                    <strong>Vraag – {fase}</strong><br><br>
+                    {st.session_state.gekozen_kaart['vraag']}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        # ------------------------------
+        # POSITIEF
+        # ------------------------------
+
+        elif kaart_type == "Positief gevolg":
+
+            gekozen_kaart = (
+                trek_kaart_zonder_duplicaten(
+                    fase,
+                    kaart_type
+                )
+            )
+
+            st.markdown(
+                f"""
+                <div style="
+                    background-color:#ccffcc;
+                    padding:15px;
+                    border-radius:10px;">
+                    <strong>Positief gevolg – {fase}</strong><br><br>
+                    {gekozen_kaart.replace(chr(10), '<br>')}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        # ------------------------------
+        # NEGATIEF
+        # ------------------------------
+
+        elif kaart_type == "Negatief gevolg":
+
+            gekozen_kaart = (
+                trek_kaart_zonder_duplicaten(
+                    fase,
+                    kaart_type
+                )
+            )
+
+            st.markdown(
+                f"""
+                <div style="
+                    background-color:#ffcccc;
+                    padding:15px;
+                    border-radius:10px;">
+                    <strong>Negatief gevolg – {fase}</strong><br><br>
+                    {gekozen_kaart.replace(chr(10), '<br>')}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+# --------------------------------------------------
+# ANTWOORD TONEN
+# --------------------------------------------------
+
+if (
+    kaart_type == "Vraag"
+    and st.session_state.gekozen_kaart is not None
+):
+
+    if st.button("✅ Toon antwoord"):
+
+        st.success(
+            st.session_state.gekozen_kaart["antwoord"]
+        )
+
 
 # --------------------------------------------------
 # KAART TREKKEN
