@@ -112,17 +112,6 @@ for _, row in df.iterrows():
         )
 
 # --------------------------------------------------
-# HEADER
-# --------------------------------------------------
-
-st.image(
-    "https://raw.githubusercontent.com/wisseroelofbakker-beep/Academic-Pharma-Goose-Game/main/Icon_Academic_Pharma.png",
-    width=200
-)
-
-st.title("🎲 Kaartjeskiezer – Academic Pharma Bordspel")
-
-# --------------------------------------------------
 # CONTROLE OF ER KAARTEN ZIJN
 # --------------------------------------------------
 
@@ -338,88 +327,3 @@ if (
             st.session_state.gekozen_kaart["antwoord"]
         )
 
-
-# --------------------------------------------------
-# KAART TREKKEN
-# --------------------------------------------------
-
-if st.button("🎲 Trek een kaartje"):
-
-    beschikbare_kaarten = kaartjes[fase][kaart_type]
-
-    if len(beschikbare_kaarten) == 0:
-        st.error(
-            f"Er zijn geen '{kaart_type}' kaarten beschikbaar voor '{fase}'."
-        )
-    else:
-
-        if kaart_type == "Vraag":
-
-            st.session_state.gekozen_kaart = random.choice(
-                beschikbare_kaarten
-            )
-
-            st.markdown(
-                f"""
-                <div style="
-                    background-color:#333333;
-                    color:white;
-                    padding:15px;
-                    border-radius:10px;">
-                    <strong>Vraag – {fase}</strong><br><br>
-                    {st.session_state.gekozen_kaart['vraag']}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        elif kaart_type == "Positief gevolg":
-
-            gekozen_kaart = random.choice(
-                beschikbare_kaarten
-            )
-
-            st.markdown(
-                f"""
-                <div style="
-                    background-color:#ccffcc;
-                    padding:15px;
-                    border-radius:10px;">
-                    <strong>Positief gevolg – {fase}</strong><br><br>
-                    {gekozen_kaart.replace(chr(10), '<br>')}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        elif kaart_type == "Negatief gevolg":
-
-            gekozen_kaart = random.choice(
-                beschikbare_kaarten
-            )
-
-            st.markdown(
-                f"""
-                <div style="
-                    background-color:#ffcccc;
-                    padding:15px;
-                    border-radius:10px;">
-                    <strong>Negatief gevolg – {fase}</strong><br><br>
-                    {gekozen_kaart.replace(chr(10), '<br>')}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-# --------------------------------------------------
-# ANTWOORD TONEN
-# --------------------------------------------------
-
-if (
-    kaart_type == "Vraag"
-    and st.session_state.gekozen_kaart is not None
-):
-    if st.button("✅ Toon antwoord"):
-        st.success(
-            st.session_state.gekozen_kaart["antwoord"]
-        )
